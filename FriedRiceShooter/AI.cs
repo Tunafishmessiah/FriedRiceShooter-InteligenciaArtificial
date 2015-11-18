@@ -101,7 +101,9 @@ namespace FriedRiceShooter
                 bulletDistance = 0;
                 wallDistance = 0;
                 playerDistance = 0;
+
                 actual = new state(false, 0, 0);
+
                 Vector2 NextPosition = Vector2.Zero;
 
 
@@ -110,25 +112,25 @@ namespace FriedRiceShooter
                         //move up
                     case 0:
                         actualPosition = 0;
-                        NextPosition = new Vector2(this.Position.X, this.Position.Y - getSpeed());
+                        NextPosition = new Vector2(this.Position.X + this.texture.Width/2, this.Position.Y  -(this.texture.Height/2) - getSpeed());
                         break;
 
                         //Move down
                     case 1:
                         actualPosition = 1;
-                        NextPosition = new Vector2(this.Position.X, this.Position.Y + getSpeed());
+                        NextPosition = new Vector2(this.Position.X + this.texture.Width / 2, this.Position.Y - (this.texture.Height / 2) + getSpeed());
                         break;
 
                         //Move left
                     case 2:
                         actualPosition = 2;
-                        NextPosition = new Vector2(this.Position.X - getSpeed(), this.Position.Y);
+                        NextPosition = new Vector2(this.Position.X + (this.texture.Width / 2) - getSpeed(), this.Position.Y - (this.texture.Height / 2));
                         break;
 
                         //Move right
                     case 3:
                         actualPosition = 3;
-                        NextPosition = new Vector2(this.Position.X + getSpeed(), this.Position.Y);
+                        NextPosition = new Vector2(this.Position.X + (this.texture.Width / 2) + getSpeed(), this.Position.Y - (this.texture.Height / 2));
                         break;
 
                         //Don't move
@@ -178,7 +180,7 @@ namespace FriedRiceShooter
                 //Avaliar distancia ao jogador
                 Vector2 dist = new Vector2(NextPosition.X - player.Position.X, NextPosition.Y - player.Position.Y);
 
-                if (dist.Length() <= 250)
+                if (dist.Length() <= 150)
                 {
                     actualShot = true;
                     playerDistance += dist.Length() * 1.8f;
@@ -189,15 +191,16 @@ namespace FriedRiceShooter
                     playerDistance += dist.Length() * .4f;
                 }
 
-                //Avaliar aproximação ao jogador
-                Vector2 lastDist = new Vector2(this.Position.X - player.Position.X, this.Position.Y - player.Position.Y);
-                if (lastDist.Length() < dist.Length())
-                { playerDistance *= 2; }
-                else
-                { playerDistance *= 1; }
+                ////Avaliar aproximação ao jogador
+                //Vector2 lastDist = new Vector2(this.Position.X - player.Position.X, this.Position.Y - player.Position.Y);
+                //if (lastDist.Length() < dist.Length())
+                //{ playerDistance *= 2; }
+                //else
+                //{ playerDistance *= 1; }
                 
 
-                actual.stateScore = bulletDistance + wallDistance + (playerDistance *3);
+                actual.stateScore = bulletDistance + wallDistance + playerDistance ;
+               
                 actual.position = actualPosition;
                 actual.shoting = actualShot;
                 Console.WriteLine(actual.stateScore);

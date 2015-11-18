@@ -12,7 +12,7 @@ namespace FriedRiceShooter
 {
     class Bullet : Sprite
     {
-        private const int Velocity = 5;
+        private const int Velocity = 30;
         public Vector2 speed;
         public bool OutOfBounds;
         public Bullet(Vector2 ShipPosition, float ShipRotation,Texture2D BulletTexture, SpriteBatch Sprite, GraphicsDeviceManager graphics)
