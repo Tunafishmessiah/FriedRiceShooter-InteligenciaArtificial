@@ -12,6 +12,7 @@ namespace FriedRiceShooter
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Player mainShip;
+        AI dummy;
         public Texture2D ShipTexture, BulletTexture;
 
 
@@ -39,9 +40,18 @@ namespace FriedRiceShooter
             BulletTexture = Content.Load<Texture2D>("Bullet");
 
             //Initialize ships here, for loading less resources
-            mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4, graphics.PreferredBackBufferHeight / 2), graphics,ShipTexture,BulletTexture, spriteBatch);
+            mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4,
+                graphics.PreferredBackBufferHeight / 2),
+                graphics,ShipTexture,BulletTexture,
+                spriteBatch);
 
-
+            dummy = new AI(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
+                graphics.PreferredBackBufferHeight / 2),
+                graphics,
+                ShipTexture,
+                BulletTexture,
+                spriteBatch,
+                mainShip);
         }
 
         protected override void UnloadContent(){}
@@ -51,7 +61,7 @@ namespace FriedRiceShooter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             mainShip.Update(gameTime);
-
+            dummy.Update(gameTime);
             base.Update(gameTime);
         }
 
@@ -63,6 +73,7 @@ namespace FriedRiceShooter
 
             mainShip.Draw();
             // TODO: Add your drawing code here
+            dummy.Draw();
 
             spriteBatch.End();
             base.Draw(gameTime);

@@ -13,14 +13,15 @@ namespace FriedRiceShooter
     class Player : Ship
     {
         public Player(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite)
-            : base(position,graphics,ShipTexture,BulletTexture, Sprite)
-        {
-        }
+            : base(position, graphics, ShipTexture, BulletTexture, Sprite) { }
+        
 
         public override void rotate()
         {
             MouseState mouse = Mouse.GetState();
             AimAt(new Vector2(mouse.Position.X, mouse.Position.Y));
+            
+            //Shooting is here as well
             if (mouse.LeftButton == ButtonState.Pressed && !shooting)
             {
                 this.Shoot();
