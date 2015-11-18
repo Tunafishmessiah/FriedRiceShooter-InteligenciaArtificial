@@ -1,0 +1,43 @@
+Direção dos disparos depende da rotacao da nave? não
+há colisão de bala com bala? não
+reconhecer padrões de movimento?É uma ideia
+
+f = futuro/a
+vector2 ddj = distancia otima ao jogador(minimo, maximo)
+boaDistancia = (max(fdj, ddj.min) == min(fdj, ddj.max))
+
+mdb - média das distâncias das balas (próximas ou todas?) - maior média é melhor
+mdp - média das distâncias das paredes (próximas ou todas) - maior média é melhor
+dj - distancia ao jogador - distância média é melhor
+nb - numero de balas
+nbj - numero de balas do jogador
+
+
+!jPerto >>  !balasPerto >> !paredePerto
+
+a(fmdb, fmdp, fdj)
+{	
+	defensivo = nb/nbj;		nb > nbj; 	nb - nbj;
+	
+	foreach direction
+		p(fmdb, fmdp, fdj, defensivo);
+	t(fmdb, fmdp, fdj, defensivo);
+}
+
+p(mdb, mdp, fdj, d) 
+{	
+	estado = 0;
+	if (jPerto)
+		estado += fdj * 10;
+	else
+		estado += fdj * defensivo;
+	estado += fmdb * 2 + fmdp;
+	
+}	
+
+t(mdb, mdp, fdj, d) 
+{
+	if (jPerto)
+		return true;
+	else if (
+}
