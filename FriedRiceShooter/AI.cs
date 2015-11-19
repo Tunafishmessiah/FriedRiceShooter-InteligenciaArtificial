@@ -30,12 +30,13 @@ namespace FriedRiceShooter
             : base(position,graphics,ShipTexture,BulletTexture, Sprite)
         {
             this.player = player;
+            next.position = 4;
         }
 
         public override void Update(GameTime gametime)
         {
-
-            next = Think();
+            MyThink();
+            //next = Think();
             base.Update(gametime);
         }
 
@@ -74,6 +75,77 @@ namespace FriedRiceShooter
                 Shoot();
                 shooting = next.shoting;
             }
+        }
+
+        private void MyThink()
+        {
+            float defensivo = bullets / player.bullets == 0? -1 : player.bullets; 
+
+            List<Vector2> positions = new List<Vector2>();
+            foreach (Bullet shot in player.ShotsFired)
+            {
+                positions.Add(shot.Position + shot.speed * shot.getVelocity());
+            }
+
+            float bestScore = float.NegativeInfinity;
+            int bestIndex = 4;
+            for (int i = 0; i <= 4; i++)
+            {
+                float distances = 0;
+                Vector2 nextPosition;
+                nextPosition = CalculateNextPosition(i);
+                foreach (Vector2 bullet in positions)
+                {
+                    distances += (bullet - nextPosition).Length();
+                }
+
+                float centerDistance = (nextPosition - ScreenSize/2).Length();
+
+                float score = distances * 2 - centerDistance;
+
+                if (score > bestScore)
+                {
+                    bestIndex = i;
+                    bestScore = score;
+                }
+            }
+
+            next.position = bestIndex;
+            next.shoting = true;
+        }
+
+        private Vector2 CalculateNextPosition(int index)
+        {
+            Vector2 nextPosition = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
+            switch (index)
+            {
+                //move up
+                case 0:
+                    nextPosition = new Vector2(this.Position.X, this.Position.Y - getSpeed());
+                    break;
+
+                //Move down
+                case 1:
+                    nextPosition = new Vector2(this.Position.X, this.Position.Y + getSpeed());
+                    break;
+
+                //Move left
+                case 2:
+                    nextPosition = new Vector2(this.Position.X - getSpeed(), this.Position.Y);
+                    break;
+
+                //Move right
+                case 3:
+                    nextPosition = new Vector2(this.Position.X + getSpeed(), this.Position.Y);
+                    break;
+
+                //Don't move
+                case 4:
+                    nextPosition = this.Position;
+                    break;
+
+            }
+            return nextPosition;
         }
 
         private state Think()

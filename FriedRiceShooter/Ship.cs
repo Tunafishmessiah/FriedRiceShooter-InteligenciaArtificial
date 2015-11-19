@@ -13,6 +13,7 @@ namespace FriedRiceShooter
     abstract class Ship : Sprite
     {
         int HitPoints;
+        public int bullets = 30;
         private const int speed = 5;
         public GraphicsDeviceManager graphics;
         public Texture2D BulletTexture;
@@ -126,10 +127,14 @@ namespace FriedRiceShooter
 
         public void Shoot()
         {
-            Bullet shot = new Bullet(this.Position, this.rotation, BulletTexture, this.Spriter, this.graphics);
-            ShotsFired.Add(shot);
-            shooting = true;
-            timer = 0;
+            if (bullets > 0)
+            {
+                bullets--;
+                Bullet shot = new Bullet(this.Position, this.rotation, BulletTexture, this.Spriter, this.graphics);
+                ShotsFired.Add(shot);
+                shooting = true;
+                timer = 0;
+            }
         }
 
         public abstract void rotate();
