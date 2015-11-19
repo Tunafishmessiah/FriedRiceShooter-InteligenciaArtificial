@@ -9,10 +9,11 @@ using Microsoft.Xna.Framework.Media;
 
 namespace FriedRiceShooter
 {
+
     abstract class Ship : Sprite
     {
         int HitPoints;
-        const int speed = 5;
+        private const int speed = 5;
         public GraphicsDeviceManager graphics;
         public Texture2D BulletTexture;
         public List<Bullet> ShotsFired;
@@ -142,5 +143,7 @@ namespace FriedRiceShooter
             this.rotation = (float)(Math.Atan2(a, l));
         }
 
+        public int getSpeed()
+        { return speed; }
     }
 }
