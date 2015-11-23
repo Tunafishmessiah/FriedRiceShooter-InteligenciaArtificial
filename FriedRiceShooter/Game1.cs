@@ -13,6 +13,7 @@ namespace FriedRiceShooter
         SpriteBatch spriteBatch;
         Player mainShip;
         AI dummy;
+        AiC dummy2;
         public Texture2D ShipTexture, BulletTexture;
 
 
@@ -40,10 +41,34 @@ namespace FriedRiceShooter
             BulletTexture = Content.Load<Texture2D>("Bullet");
 
             //Initialize ships here, for loading less resources
-            mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4,
+            //mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4,
+            //    graphics.PreferredBackBufferHeight / 2),
+            //    graphics, ShipTexture, BulletTexture,
+            //    spriteBatch);
+
+            //dummy = new AI(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
+            //    graphics.PreferredBackBufferHeight / 2),
+            //    graphics,
+            //    ShipTexture,
+            //    BulletTexture,
+            //    spriteBatch,
+            //    mainShip);
+            
+            //dummy2 = new AiC(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
+            //    graphics.PreferredBackBufferHeight / 2),
+            //    graphics,
+            //    ShipTexture,
+            //    BulletTexture,
+            //    spriteBatch,
+            //    mainShip);
+
+            dummy2 = new AiC(new Vector2((graphics.PreferredBackBufferWidth / 4),
                 graphics.PreferredBackBufferHeight / 2),
-                graphics,ShipTexture,BulletTexture,
-                spriteBatch);
+                graphics,
+                ShipTexture,
+                BulletTexture,
+                spriteBatch,
+                dummy);
 
             dummy = new AI(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
                 graphics.PreferredBackBufferHeight / 2),
@@ -51,7 +76,9 @@ namespace FriedRiceShooter
                 ShipTexture,
                 BulletTexture,
                 spriteBatch,
-                mainShip);
+                dummy2);
+
+
         }
 
         protected override void UnloadContent(){}
@@ -60,7 +87,8 @@ namespace FriedRiceShooter
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            mainShip.Update(gameTime);
+            //mainShip.Update(gameTime);
+            dummy2.Update(gameTime);
             dummy.Update(gameTime);
             base.Update(gameTime);
         }
@@ -69,11 +97,11 @@ namespace FriedRiceShooter
         {
             GraphicsDevice.Clear(Color.Black);
             spriteBatch.Begin();
+            //mainShip.Draw();
 
-
-            mainShip.Draw();
             // TODO: Add your drawing code here
             dummy.Draw();
+            dummy2.Draw();
 
             spriteBatch.End();
             base.Draw(gameTime);

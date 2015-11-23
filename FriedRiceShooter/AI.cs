@@ -23,10 +23,10 @@ namespace FriedRiceShooter
 
     class AI : Ship
     {
-        private Player player;
+        private Ship player;
         private state next; 
 
-        public AI(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Player player)
+        public AI(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player)
             : base(position,graphics,ShipTexture,BulletTexture, Sprite)
         {
             this.player = player;
