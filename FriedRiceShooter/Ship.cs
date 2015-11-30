@@ -13,8 +13,9 @@ namespace FriedRiceShooter
     abstract class Ship : Sprite
     {
         int HitPoints;
-        public int bullets = 30;
+        public int bullets = 100000;
         private const int speed = 5;
+        private const float cooldown = 0.25f;
         public GraphicsDeviceManager graphics;
         public Texture2D BulletTexture;
         public List<Bullet> ShotsFired;
@@ -46,7 +47,7 @@ namespace FriedRiceShooter
             if (shooting)
             {
                 timer += gametime.ElapsedGameTime.TotalSeconds;
-                if (timer > 1)
+                if (timer > cooldown)
                 {
                     shooting = false;
                 }

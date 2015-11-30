@@ -22,7 +22,7 @@ namespace FriedRiceShooter
             this.stateScore = Sc;
         }
     }
-        private Ship player;
+        public Ship player;
         private state next; 
 
         public AiC(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player)
