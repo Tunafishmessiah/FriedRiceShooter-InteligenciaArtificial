@@ -88,8 +88,8 @@ namespace FriedRiceShooter
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             //mainShip.Update(gameTime);
-            dummy2.Update(gameTime);
             dummy.Update(gameTime);
+            dummy2.Update(gameTime);
             base.Update(gameTime);
         }
 
