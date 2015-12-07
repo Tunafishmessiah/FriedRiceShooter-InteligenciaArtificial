@@ -15,18 +15,18 @@ namespace FriedRiceShooter
         public int position;
         public float stateScore;
 
-        public state(bool S, int P, int Sc)
+        public state(bool s, int p, int sc)
         {
-            this.shoting = S;
-            this.position = P;
-            this.stateScore = Sc;
+            this.shoting = s;
+            this.position = p;
+            this.stateScore = sc;
         }
     }
         public Ship player;
         private state next; 
 
-        public AiC(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player)
-            : base(position,graphics,ShipTexture,BulletTexture, Sprite)
+        public AiC(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite, Ship player)
+            : base(position,graphics,shipTexture,bulletTexture, sprite)
         {
             this.player = player;
             next.position = 4;
@@ -45,12 +45,12 @@ namespace FriedRiceShooter
             base.Update(gametime);
         }
 
-        public override void rotate()
+        public override void Rotate()
         {
             AimAt(player.Position);
         }
 
-        public override void move()
+        public override void Move()
         {
             switch (next.position)
             {
@@ -89,27 +89,27 @@ namespace FriedRiceShooter
             {
                 //move up
                 case 0:
-                    nextPosition = new Vector2(this.Position.X, this.Position.Y - getSpeed());
+                    nextPosition = new Vector2(Position.X, Position.Y - speed);
                     break;
 
                 //Move down
                 case 1:
-                    nextPosition = new Vector2(this.Position.X, this.Position.Y + getSpeed());
+                    nextPosition = new Vector2(Position.X, Position.Y + speed);
                     break;
 
                 //Move left
                 case 2:
-                    nextPosition = new Vector2(this.Position.X - getSpeed(), this.Position.Y);
+                    nextPosition = new Vector2(Position.X - speed, Position.Y);
                     break;
 
                 //Move right
                 case 3:
-                    nextPosition = new Vector2(this.Position.X + getSpeed(), this.Position.Y);
+                    nextPosition = new Vector2(Position.X + speed, Position.Y);
                     break;
 
                 //Don't move
                 case 4:
-                    nextPosition = this.Position;
+                    nextPosition = Position;
                     break;
 
             }
@@ -128,11 +128,11 @@ namespace FriedRiceShooter
             bool actualShot;
 
             #region predictions
-            foreach (Bullet shot in player.ShotsFired)
+            foreach (Bullet shot in player.shotsFired)
             {
                 //Saber as proximas posições das balas
                 Bullet N = shot;
-                N.Position += (N.speed * N.getVelocity());
+                N.Position += (N.velocity * Bullet.speed);
 
                 fEnemy.Add(N);
             }
@@ -146,7 +146,7 @@ namespace FriedRiceShooter
 
                 actual = new state(false, 0, 0);
 
-                Vector2 NextPosition = Vector2.Zero;
+                Vector2 nextPosition = Vector2.Zero;
 
 
                 switch (i)
@@ -154,42 +154,42 @@ namespace FriedRiceShooter
                         //move up
                     case 0:
                         actualPosition = 0;
-                        NextPosition = new Vector2(this.Position.X + this.texture.Width/2, this.Position.Y  -(this.texture.Height/2) - getSpeed());
+                        nextPosition = new Vector2(Position.X + this.texture.Width/2, Position.Y  -(this.texture.Height/2) - speed);
                         break;
 
                         //Move down
                     case 1:
                         actualPosition = 1;
-                        NextPosition = new Vector2(this.Position.X + this.texture.Width / 2, this.Position.Y - (this.texture.Height / 2) + getSpeed());
+                        nextPosition = new Vector2(Position.X + this.texture.Width / 2, Position.Y - (this.texture.Height / 2) + speed);
                         break;
 
                         //Move left
                     case 2:
                         actualPosition = 2;
-                        NextPosition = new Vector2(this.Position.X + (this.texture.Width / 2) - getSpeed(), this.Position.Y - (this.texture.Height / 2));
+                        nextPosition = new Vector2(Position.X + (this.texture.Width / 2) - speed, Position.Y - (this.texture.Height / 2));
                         break;
 
                         //Move right
                     case 3:
                         actualPosition = 3;
-                        NextPosition = new Vector2(this.Position.X + (this.texture.Width / 2) + getSpeed(), this.Position.Y - (this.texture.Height / 2));
+                        nextPosition = new Vector2(Position.X + (this.texture.Width / 2) + speed, Position.Y - (this.texture.Height / 2));
                         break;
 
                         //Don't move
                     case 4:
                         actualPosition = 4;
-                        NextPosition = this.Position;
+                        nextPosition = Position;
                         break;
                 }
 
 
                 //Dar score pela distancia aos tiros
-                if (player.ShotsFired.Count > 0)
+                if (player.shotsFired.Count > 0)
                 {
                     foreach (Bullet shot in fEnemy)
                     {
                         //Verifica a distancia entre a proxima posição da nave e a proxima posição dos tiros
-                        Vector2 distance = NextPosition - shot.Position;
+                        Vector2 distance = nextPosition - shot.Position;
                         bulletDistance += distance.Length() * 1;
                     }
                 }
@@ -198,13 +198,13 @@ namespace FriedRiceShooter
                 //Dar score pela distancia as paredes, sendo que o score maximo é o centro do ecrã
                 //So da score pela parede mais proxima no eixo do X
 
-                Vector2 ScreenPosX = new Vector2(this.ScreenSize.X - this.Position.X, this.ScreenSize.Y - this.Position.Y);
+                Vector2 screenPosX = new Vector2(this.screenSize.X - Position.X, this.screenSize.Y - Position.Y);
 
-                wallDistance = ScreenPosX.Length() * -.8f;
+                wallDistance = screenPosX.Length() * -.8f;
 
 
                 //Avaliar distancia ao jogador
-                Vector2 dist = new Vector2(NextPosition.X - player.Position.X, NextPosition.Y - player.Position.Y);
+                Vector2 dist = new Vector2(nextPosition.X - player.Position.X, nextPosition.Y - player.Position.Y);
 
                 if (dist.Length() <= 150)
                 {
@@ -218,7 +218,7 @@ namespace FriedRiceShooter
                 }
 
                 ////Avaliar aproximação ao jogador
-                Vector2 lastDist = new Vector2(this.Position.X - player.Position.X, this.Position.Y - player.Position.Y);
+                Vector2 lastDist = new Vector2(Position.X - player.Position.X, Position.Y - player.Position.Y);
                 if (lastDist.Length() < dist.Length())
                 { playerDistance *= 2; }
                 else

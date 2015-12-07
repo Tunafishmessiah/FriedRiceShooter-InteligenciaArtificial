@@ -12,35 +12,35 @@ namespace FriedRiceShooter
 
     abstract class Ship : Sprite
     {
-        int HitPoints;
+        public int hitPoints;
         public int bullets = 100000;
-        private const int speed = 5;
+        public const int speed = 5;
         private const float cooldown = 0.25f;
         public GraphicsDeviceManager graphics;
-        public Texture2D BulletTexture;
-        public List<Bullet> ShotsFired;
+        public Texture2D bulletTexture;
+        public List<Bullet> shotsFired;
         public bool shooting;
         private double timer;
 
-        public Ship(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite)
-            : base(position, ShipTexture, Sprite, graphics)
+        public Ship(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite)
+            : base(position, shipTexture, sprite, graphics)
         {
-            this.HitPoints = 10;
+            hitPoints = 10;
             this.graphics = graphics;
-            this.BulletTexture = BulletTexture;
+            this.bulletTexture = bulletTexture;
 
-            ShotsFired = new List<Bullet>();
+            shotsFired = new List<Bullet>();
             shooting = false;
         }
 
         public virtual void Update(GameTime gametime)
         {
-            foreach (Bullet bullet in ShotsFired.ToList())
+            foreach (Bullet bullet in shotsFired.ToList())
             {
                 bullet.Update();
-                if (bullet.OutOfBounds)
+                if (bullet.outOfBounds)
                 {
-                    ShotsFired.Remove(bullet);
+                    shotsFired.Remove(bullet);
                 }
             }
 
@@ -52,15 +52,15 @@ namespace FriedRiceShooter
                     shooting = false;
                 }
             }
-            move();
-            rotate();
-
+            Move();
+            Position = Vector2.Clamp(Position, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(screenSize.X - texture.Width / 2, screenSize.Y - texture.Height / 2));
+            Rotate();
         }
 
-        public new virtual void Draw()
+        public override void Draw()
         {
             base.Draw();
-            foreach (Bullet bullet in ShotsFired)
+            foreach (Bullet bullet in shotsFired)
             {
                 bullet.Draw();
             }
@@ -69,87 +69,81 @@ namespace FriedRiceShooter
         public void MoveRight()
         {
             //Locking it on the screen side
-            if ((this.Position.X + this.texture.Width) + speed > this.ScreenSize.X)
+            if ((Position.X + texture.Width/2) + speed > screenSize.X)
             {
-                this.Position = new Vector2(this.ScreenSize.X - this.texture.Width, this.Position.Y);
+                Position = new Vector2(screenSize.X - texture.Width/2, Position.Y);
             }
             //letting him move
             else {
-                this.Position = new Vector2(this.Position.X + speed, this.Position.Y);
+                Position = new Vector2(Position.X + speed, Position.Y);
             }
         }
 
         public void MoveLeft()
         {
             //Locking it on the screen side
-            if (this.Position.X - speed > 0)
+            if (Position.X - speed > texture.Width/2)
             {
-                this.Position = new Vector2(this.Position.X - speed, this.Position.Y);
+                Position = new Vector2(Position.X - speed, Position.Y);
             }
             //letting him move
-            else this.Position = new Vector2(0, this.Position.Y);
+            else Position = new Vector2(texture.Width/2, Position.Y);
         }
         
         public void MoveUp()
         {
             //Locking it on the screen side
-            if (this.Position.Y - speed > 0)
+            if (Position.Y - speed > texture.Height/2)
             {
-                this.Position = new Vector2(this.Position.X, this.Position.Y - speed);
+                Position = new Vector2(Position.X, Position.Y - speed);
             }
             //letting him move
             else
             {
-                this.Position = new Vector2(this.Position.X, 0);
+                Position = new Vector2(Position.X, texture.Height/2);
             }
         }
         
         public void MoveDown()
         {
             //Locking it on the screen side
-            if ((this.Position.Y + this.texture.Height) + speed < this.ScreenSize.Y)
+            if ((Position.Y + this.texture.Height/2) + speed < this.screenSize.Y)
             {
-                this.Position = new Vector2(this.Position.X, this.Position.Y + speed);
+                Position = new Vector2(Position.X, Position.Y + speed);
             }
             //letting him move
             else
             {
-                this.Position = new Vector2(this.Position.X, this.ScreenSize.Y - texture.Height);
+                Position = new Vector2(Position.X, this.screenSize.Y - texture.Height/2);
             }
         }
 
         public void Hit()
         {
-            this.HitPoints = this.HitPoints--;
+            this.hitPoints = this.hitPoints--;
         }
-
-        public int GetHp()
-        { return this.HitPoints; }
-
+        
         public void Shoot()
         {
             if (bullets > 0)
             {
                 bullets--;
-                Bullet shot = new Bullet(this.Position, this.rotation, BulletTexture, this.Spriter, this.graphics);
-                ShotsFired.Add(shot);
+                Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics);
+                shotsFired.Add(shot);
                 shooting = true;
                 timer = 0;
             }
         }
 
-        public abstract void rotate();
+        public abstract void Rotate();
 
-        public abstract void move();
+        public abstract void Move();
 
         public void AimAt(Vector2 at)
         {
-            float l = (float)(at.X - this.Position.X);
-            float a = (float)(at.Y - this.Position.Y);
-            this.rotation = (float)(Math.Atan2(a, l));
+            float l = (float)(at.X - Position.X);
+            float a = (float)(at.Y - Position.Y);
+            rotation = (float)(Math.Atan2(a, l));
         }
-
-        public int getSpeed()
-        { return speed; }
     }
 }

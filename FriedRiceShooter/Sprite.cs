@@ -11,42 +11,52 @@ namespace FriedRiceShooter
 {
     class Sprite
     {
-        public Texture2D texture;
-        public Vector2 Position;
-        public Color color;
-        Rectangle Tangle;//Rectangle to show the texture
-        Rectangle Hitbox;
-        public float rotation;
-        public Vector2 Scale;
-        private SpriteEffects Effect;
-        private Vector2 Origin;
-        public SpriteBatch Spriter;
-        public Vector2 ScreenSize;
+        protected Texture2D texture;
+        private Vector2 position;
+        protected Color color;
+        private Rectangle tangle;//Rectangle to show the texture
+        private Rectangle hitbox;
+        protected float rotation;
+        protected Vector2 scale;
+        private SpriteEffects effect;
+        private Vector2 origin;
+        protected SpriteBatch spriter;
+        protected Vector2 screenSize;
 
-        public Sprite(Vector2 Pos ,  Texture2D texture, SpriteBatch sprite, GraphicsDeviceManager graphics)
+        public Sprite(Vector2 position, Texture2D texture, SpriteBatch sprite, GraphicsDeviceManager graphics)
         {
             color = Color.White;
-            Position = Pos;
+            this.position = position;
             rotation = 0;
-            Scale = new Vector2(1, 1);
-            Effect = SpriteEffects.None;
+            scale = new Vector2(1, 1);
+            effect = SpriteEffects.None;
 
-            this.Spriter = sprite;
+            spriter = sprite;
 
             this.texture = texture;
 
-            Tangle = new Rectangle(1, 1, this.texture.Width, this.texture.Height);
+            tangle = new Rectangle(0, 0, this.texture.Width, this.texture.Height);
 
-            Hitbox = new Rectangle((int)this.Position.X, (int)this.Position.Y, this.texture.Width, this.texture.Height);
+            hitbox = new Rectangle((int)this.position.X, (int)this.position.Y, this.texture.Width, this.texture.Height);
 
-            Origin = new Vector2(this.texture.Width / 2, this.texture.Height / 2);
+            origin = new Vector2(this.texture.Width / 2, this.texture.Height / 2);
 
-            ScreenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            screenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
         }
 
-        public void Draw()
+        public virtual void Draw()
         {
-            this.Spriter.Draw(texture, Position,Tangle, color, this.rotation,Origin,Scale, Effect, 1f);
+            spriter.Draw(texture, position,tangle, color, rotation, origin, scale, effect, 1f);
+        }
+
+        public Vector2 Position
+        {
+            get { return position; }
+            set
+            {
+                position = value;
+                hitbox = new Rectangle((int)this.position.X, (int)this.position.Y, this.texture.Width, this.texture.Height);
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Input;
 
 namespace FriedRiceShooter
 {
@@ -23,8 +24,9 @@ namespace FriedRiceShooter
 
     class AI : Ship
     {
-        private Ship player;
-        private state next; 
+        public Ship player;
+        private state next;
+        private float rayCenter;
 
         public AI(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player)
             : base(position,graphics,ShipTexture,BulletTexture, Sprite)
@@ -33,6 +35,7 @@ namespace FriedRiceShooter
             next.position = 4;
             color = Color.Red;
             bullets = 0;
+            rayCenter = Math.Min(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight) / 2;
         }
 
         public override void Update(GameTime gametime)
@@ -40,16 +43,15 @@ namespace FriedRiceShooter
             next.position = 4;
             Look();
             Think();
-            //next = Think();
             base.Update(gametime);
         }
 
-        public override void rotate()
+        public override void Rotate()
         {
             AimAt(player.Position);
         }
 
-        public override void move()
+        public override void Move()
         {
             switch (next.position)
             {
@@ -89,10 +91,10 @@ namespace FriedRiceShooter
             futureBulletPositions.Clear();
             bulletDirections.Clear();
 
-            foreach (Bullet shot in player.ShotsFired)
+            foreach (Bullet shot in player.shotsFired)
             {
-                futureBulletPositions.Add(shot.Position + shot.speed * shot.getVelocity());
-                Vector2 d = shot.speed;
+                futureBulletPositions.Add(shot.Position + shot.velocity * Bullet.speed);
+                Vector2 d = shot.velocity;
                 d.Normalize();
                 bulletDirections.Add(d);
             }
@@ -104,6 +106,7 @@ namespace FriedRiceShooter
 
             float bestScore = float.NegativeInfinity;
             int bestIndex = 4;
+
             for (int i = 0; i <= 4; i++)
             {
                 float distances = 0;
@@ -117,22 +120,19 @@ namespace FriedRiceShooter
                 {
                     Vector2 framing = nextPosition - futureBulletPositions[j];
                     float futureDistance = framing.Length();
-
                     framing.Normalize();
                     float dot = Vector2.Dot(framing, bulletDirections[j]);
                     if (dot >= 0)
                         dot = 1 - dot;
 
-                    distances += futureDistance * dot ;
-                }                
+                    distances += futureDistance * dot * 200;
+                }
 
-                float centerDistance = (ScreenSize / 2f - nextPosition).Length();
+                float centerDistance = (screenSize / 2f - nextPosition).Length();
 
-                float score;// = distances * 20 - centerDistance;
-                if (distances == 0)
-                    score = -centerDistance;
-                else
-                    score = distances;
+                float score;
+
+                score = distances - centerDistance;
 
                 if (score >= bestScore)
                 {
@@ -143,7 +143,6 @@ namespace FriedRiceShooter
                 next.position = bestIndex;
                 next.shoting = true;
             }
-            Console.WriteLine(bestScore);
         }
         
         private Vector2 CalculateNextPosition(int index)
@@ -153,30 +152,31 @@ namespace FriedRiceShooter
             {
                 //move up
                 case 0:
-                    nextPosition = new Vector2(this.Position.X, this.Position.Y - getSpeed());
+                    nextPosition = new Vector2(Position.X, Position.Y - speed);
                     break;
 
                 //Move down
                 case 1:
-                    nextPosition = new Vector2(this.Position.X, this.Position.Y + getSpeed());
+                    nextPosition = new Vector2(Position.X, Position.Y + speed);
                     break;
 
                 //Move left
                 case 2:
-                    nextPosition = new Vector2(this.Position.X - getSpeed(), this.Position.Y);
+                    nextPosition = new Vector2(Position.X - speed, Position.Y);
                     break;
 
                 //Move right
                 case 3:
-                    nextPosition = new Vector2(this.Position.X + getSpeed(), this.Position.Y);
+                    nextPosition = new Vector2(Position.X + speed, Position.Y);
                     break;
 
                 //Don't move
                 case 4:
-                    nextPosition = this.Position;
+                    nextPosition = Position;
                     break;
 
             }
+            nextPosition = Vector2.Clamp(nextPosition, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(screenSize.X - texture.Width / 2, screenSize.Y - texture.Height / 2));
             return nextPosition;
         }
     }

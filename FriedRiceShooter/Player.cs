@@ -12,11 +12,11 @@ namespace FriedRiceShooter
 {
     class Player : Ship
     {
-        public Player(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite)
-            : base(position, graphics, ShipTexture, BulletTexture, Sprite) { }
+        public Player(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite)
+            : base(position, graphics, shipTexture, bulletTexture, sprite) { }
         
 
-        public override void rotate()
+        public override void Rotate()
         {
             MouseState mouse = Mouse.GetState();
             AimAt(new Vector2(mouse.Position.X, mouse.Position.Y));
@@ -28,10 +28,10 @@ namespace FriedRiceShooter
             }
         }
 
-        public override void move()
+        public override void Move()
         {    
             KeyboardState k = Keyboard.GetState();
-            if (this.GetHp() > 0)
+            if (hitPoints > 0)
             {
 
                 if (k.IsKeyDown(Keys.W))

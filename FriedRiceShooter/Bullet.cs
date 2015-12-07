@@ -12,32 +12,30 @@ namespace FriedRiceShooter
 {
     class Bullet : Sprite
     {
-        private const int Velocity = 30;
-        public Vector2 speed;
-        public bool OutOfBounds;
-        public Bullet(Vector2 ShipPosition, float ShipRotation,Texture2D BulletTexture, SpriteBatch Sprite, GraphicsDeviceManager graphics)
-            : base(ShipPosition, BulletTexture, Sprite, graphics)
+        public const int speed = 30;
+        public Vector2 velocity;
+        public bool outOfBounds;
+
+        public Bullet(Vector2 shipPosition, float shipRotation,Texture2D bulletTexture, SpriteBatch sprite, GraphicsDeviceManager graphics)
+            : base(shipPosition, bulletTexture, sprite, graphics)
         {
-            this.Scale = new Vector2(.6f,.5f);
-            this.speed = Vector2.UnitX;
-            this.speed = Vector2.Transform(speed, Matrix.CreateRotationZ(ShipRotation));
-            this.rotation = ShipRotation +(float)(Math.PI/2);
-            this.OutOfBounds = false;
+            this.scale = new Vector2(.6f,.5f);
+            this.velocity = Vector2.UnitX;
+            this.velocity = Vector2.Transform(velocity, Matrix.CreateRotationZ(shipRotation));
+            this.rotation = shipRotation +(float)(Math.PI/2);
+            this.outOfBounds = false;
 
             this.Update();
         }
 
         public void Update()
         {
-            this.Position = Position + (speed*Velocity);
+            Position = Position + (velocity*speed);
 
-            if (this.Position.X > this.ScreenSize.X || this.Position.X < 0 || this.Position.Y > this.ScreenSize.Y || this.Position.Y < 0)
+            if (Position.X > this.screenSize.X || Position.X < 0 || Position.Y > this.screenSize.Y || Position.Y < 0)
             {
-                this.OutOfBounds = true;
+                outOfBounds = true;
             }
         }
-
-        public int getVelocity()
-        { return Velocity; }
     }
 }
