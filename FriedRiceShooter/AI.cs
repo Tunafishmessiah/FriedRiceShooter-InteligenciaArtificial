@@ -34,7 +34,6 @@ namespace FriedRiceShooter
             this.player = player;
             next.position = 4;
             color = Color.Red;
-            bullets = 0;
             rayCenter = Math.Min(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight) / 2;
         }
 
@@ -98,6 +97,8 @@ namespace FriedRiceShooter
                 d.Normalize();
                 bulletDirections.Add(d);
             }
+
+            //debug
         }
 
         private void Think()
@@ -115,23 +116,39 @@ namespace FriedRiceShooter
                 nextPosition = CalculateNextPosition(i);
 
                 int count = futureBulletPositions.Count;
+                
+                //Funnção balas
 
-                for (int j = 0; j < count; j++)
+                if (count != 0)
                 {
-                    //dodging bullets
-                    Vector2 framing = nextPosition - futureBulletPositions[j];
-                    float futureDistance = framing.Length();
-                    framing.Normalize();
-                    float dot = Vector2.Dot(framing, bulletDirections[j]);
-                    if (dot >= 0)
-                        dot = 1 - dot;
 
-                    //if bullets are coming near him
-                    Vector2 actualFraming = nextPosition - player.shotsFired[j].Position;
-                    if (actualFraming.Length() < futureDistance)
-                        dot = 0;
+                    for (int j = 0; j < count; j++)
+                    {
+                        //dodging bullets
+                        Vector2 framing = nextPosition - futureBulletPositions[j];
+                        float futureDistance = framing.Length();
+                        framing.Normalize();
+                        float dot = Vector2.Dot(framing, bulletDirections[j]);
+                        if (dot >= 0)
+                            dot = 1 - dot;
 
-                    distances += futureDistance * dot * 200;
+                        //if bullets are coming near him
+                        Vector2 actualFraming = nextPosition - player.shotsFired[j].Position;
+                        if (actualFraming.Length() < futureDistance)
+                            dot = 0;
+
+                        distances += futureDistance * dot * 200;
+                    }
+                }
+                else
+                {
+                    Vector2 shipDistance = nextPosition - player.Position;
+
+                    if (shipDistance.Length() > 150)
+                    {
+                        distances = 200 * (150 / shipDistance.Length());
+                    }
+
                 }
 
                 Vector2 distanceVector = screenSize / 2f - nextPosition;
@@ -216,8 +233,10 @@ namespace FriedRiceShooter
                 }
 
 
+                if (centerDistance > 100)
+                    score += distances - (centerDistance * .004f);
 
-                score += distances - centerDistance;
+                else score += distances;
 
 
 

@@ -128,7 +128,7 @@ namespace FriedRiceShooter
             if (bullets > 0)
             {
                 bullets--;
-                Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics);
+                Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics, this is Player);
                 shotsFired.Add(shot);
                 shooting = true;
                 timer = 0;

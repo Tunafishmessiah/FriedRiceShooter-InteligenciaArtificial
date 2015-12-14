@@ -12,11 +12,11 @@ namespace FriedRiceShooter
 {
     class Bullet : Sprite
     {
-        public const int speed = 30;
+        public const int speed = 10;
         public Vector2 velocity;
         public bool outOfBounds;
 
-        public Bullet(Vector2 shipPosition, float shipRotation,Texture2D bulletTexture, SpriteBatch sprite, GraphicsDeviceManager graphics)
+        public Bullet(Vector2 shipPosition, float shipRotation,Texture2D bulletTexture, SpriteBatch sprite, GraphicsDeviceManager graphics, bool isPLayer)
             : base(shipPosition, bulletTexture, sprite, graphics)
         {
             this.scale = new Vector2(.6f,.5f);
@@ -25,6 +25,9 @@ namespace FriedRiceShooter
             this.rotation = shipRotation +(float)(Math.PI/2);
             this.outOfBounds = false;
 
+            if (!isPLayer)
+                this.color = Color.Red;
+            
             this.Update();
         }
 
