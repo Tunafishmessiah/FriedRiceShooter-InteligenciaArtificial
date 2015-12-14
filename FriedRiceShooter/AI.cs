@@ -149,6 +149,21 @@ namespace FriedRiceShooter
                         distances = 200 * (150 / shipDistance.Length());
                     }
 
+                    else {
+                        //orbit atempt
+
+                        if (this.Position.X - player.Position.X > 0)
+                        {
+                            if (this.Position.X < nextPosition.X)
+                                distances = 100;
+                        }
+                        else
+                        {
+                            if (this.Position.X > nextPosition.X)
+                                distances = 100;
+                        }
+                    }
+
                 }
 
                 Vector2 distanceVector = screenSize / 2f - nextPosition;
