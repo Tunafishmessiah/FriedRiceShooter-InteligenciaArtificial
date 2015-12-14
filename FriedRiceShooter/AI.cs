@@ -118,6 +118,7 @@ namespace FriedRiceShooter
 
                 for (int j = 0; j < count; j++)
                 {
+                    //dodging bullets
                     Vector2 framing = nextPosition - futureBulletPositions[j];
                     float futureDistance = framing.Length();
                     framing.Normalize();
@@ -125,20 +126,107 @@ namespace FriedRiceShooter
                     if (dot >= 0)
                         dot = 1 - dot;
 
+                    //if bullets are coming near him
+                    Vector2 actualFraming = nextPosition - player.shotsFired[j].Position;
+                    if (actualFraming.Length() < futureDistance)
+                        dot = 0;
+
                     distances += futureDistance * dot * 200;
                 }
 
+                Vector2 distanceVector = screenSize / 2f - nextPosition;
+
+                float dX, dY;
+                int badSide = 4;
+                dX = distanceVector.X;
+                dY = distanceVector.Y;
+
+                if (dX < 0)
+                    dX *= -1;
+                if (dY < 0)
+                    dY *= -1;
+
+                if (dX > dY)
+                {
+                    //Closer to the sides
+                    if (distanceVector.X > 0)
+                        badSide = 2;
+
+                    else badSide = 3;
+                }
+                else
+                {
+                    //Closer to the top or the bottom
+                    if (distanceVector.Y > 0)
+                        badSide = 0;
+                    else badSide = 1;
+                }
+
+
                 float centerDistance = (screenSize / 2f - nextPosition).Length();
 
-                float score;
+                float score = 0;
 
-                score = distances - centerDistance;
+                if (centerDistance > 250)
+                {
+                    
+                    switch (i)
+                    {
+                        //0 cima
+                        case 0:
+                            //if (distanceVector.Y > 0)
+                            if (badSide == 0) 
+                            {
+                                score = -500;
+                            }
+                            break;
+                        //1 Baixo
+                        case 1:
+                            //if (distanceVector.Y < 0)
+                            if(badSide == 1)
+                            {
+                                score = -500;
+                            }
+                            break;
+
+                        //2 Esquerda
+                        case 2:
+                            //if(distanceVector.X < 0)
+                            if(badSide == 2)
+                            {
+                                score = -500;
+                            }
+                            break;
+
+                        //3 Direita
+                        case 3:
+                            //if (distanceVector.X > 0)
+                            if(badSide == 3)
+                            {
+                                score = -500;
+                            }
+                            break;
+
+                        //4 Parar
+                        case 4:
+                            score = -500;
+                            break; 
+                    }
+ 
+                }
+
+
+
+                score += distances - centerDistance;
+
+
 
                 if (score >= bestScore)
                 {
                     bestIndex = i;
                     bestScore = score;
                 }
+                
 
                 next.position = bestIndex;
                 next.shoting = true;
