@@ -114,159 +114,159 @@ namespace FriedRiceShooter
                 Vector2 nextPosition;
 
                 nextPosition = CalculateNextPosition(i);
-
                 int count = futureBulletPositions.Count;
                 
                 //Funnção balas
-
                 if (count != 0)
                 {
-
-                    for (int j = 0; j < count; j++)
-                    {
-                        //dodging bullets
-                        Vector2 framing = nextPosition - futureBulletPositions[j];
-                        float futureDistance = framing.Length();
-                        framing.Normalize();
-                        float dot = Vector2.Dot(framing, bulletDirections[j]);
-                        if (dot >= 0)
-                            dot = 1 - dot;
-
-                        //if bullets are coming near him
-                        Vector2 actualFraming = nextPosition - player.shotsFired[j].Position;
-                        if (actualFraming.Length() < futureDistance)
-                            dot = 0;
-
-                        distances += futureDistance * dot * 200;
-                    }
+                    distances = ThinkAboutBullets(count, nextPosition);
                 }
                 else
                 {
-                    Vector2 shipDistance = nextPosition - player.Position;
-
-                    if (shipDistance.Length() > 150)
-                    {
-                        distances = 200 * (150 / shipDistance.Length());
-                    }
-
-                    else {
-                        //orbit atempt
-
-                        if (this.Position.X - player.Position.X > 0)
-                        {
-                            if (this.Position.X < nextPosition.X)
-                                distances = 100;
-                        }
-                        else
-                        {
-                            if (this.Position.X > nextPosition.X)
-                                distances = 100;
-                        }
-                    }
-
+                    distances = ThinkAboutPlayer(nextPosition);
                 }
 
-                Vector2 distanceVector = screenSize / 2f - nextPosition;
+                Vector2 centerDistanceVector = screenSize / 2f - nextPosition;
+                int badSide = GetCurrentQuadrant(centerDistanceVector);
 
-                float dX, dY;
-                int badSide = 4;
-                dX = distanceVector.X;
-                dY = distanceVector.Y;
+                float centerDistance = centerDistanceVector.Length();
 
-                if (dX < 0)
-                    dX *= -1;
-                if (dY < 0)
-                    dY *= -1;
-
-                if (dX > dY)
-                {
-                    //Closer to the sides
-                    if (distanceVector.X > 0)
-                        badSide = 2;
-
-                    else badSide = 3;
-                }
-                else
-                {
-                    //Closer to the top or the bottom
-                    if (distanceVector.Y > 0)
-                        badSide = 0;
-                    else badSide = 1;
-                }
-
-
-                float centerDistance = (screenSize / 2f - nextPosition).Length();
-
-                float score = 0;
-
-                if (centerDistance > 250)
-                {
-                    
-                    switch (i)
-                    {
-                        //0 cima
-                        case 0:
-                            //if (distanceVector.Y > 0)
-                            if (badSide == 0) 
-                            {
-                                score = -500;
-                            }
-                            break;
-                        //1 Baixo
-                        case 1:
-                            //if (distanceVector.Y < 0)
-                            if(badSide == 1)
-                            {
-                                score = -500;
-                            }
-                            break;
-
-                        //2 Esquerda
-                        case 2:
-                            //if(distanceVector.X < 0)
-                            if(badSide == 2)
-                            {
-                                score = -500;
-                            }
-                            break;
-
-                        //3 Direita
-                        case 3:
-                            //if (distanceVector.X > 0)
-                            if(badSide == 3)
-                            {
-                                score = -500;
-                            }
-                            break;
-
-                        //4 Parar
-                        case 4:
-                            score = -500;
-                            break; 
-                    }
- 
-                }
-
-
+                float score = ThinkAboutWalls(centerDistance, i, badSide);
+                
                 if (centerDistance > 100)
                     score += distances - (centerDistance * .004f);
-
-                else score += distances;
-
-
+                else 
+                    score += distances;
 
                 if (score >= bestScore)
                 {
                     bestIndex = i;
                     bestScore = score;
                 }
-                
-
-                next.position = bestIndex;
-                next.shoting = true;
             }
+            next.position = bestIndex;
+            next.shoting = true;
         }
-        
+
+        private float ThinkAboutBullets(int count, Vector2 nextPosition)
+        {
+            float distances = 0;
+            for (int j = 0; j < count; j++)
+            {
+                //dodging bullets
+                Vector2 framing = nextPosition - futureBulletPositions[j];
+                float futureDistance = framing.Length();
+                framing.Normalize();
+                float dot = Vector2.Dot(framing, bulletDirections[j]);
+                if (dot >= 0)
+                    dot = 1 - dot;
+
+                //if bullets are coming near him
+                Vector2 actualFraming = nextPosition - player.shotsFired[j].Position;
+                if (actualFraming.Length() < futureDistance)
+                    dot = 0;
+
+                distances += futureDistance * dot * 200;
+            }
+            return distances;
+        }
+
+        private float ThinkAboutPlayer(Vector2 nextPosition)
+        {
+            float distances = 0;
+   
+            float playerDistance = (nextPosition - player.Position).Length();
+
+            if (playerDistance > 150)
+            {
+                distances = 200 * (150 / playerDistance);
+            }
+
+            else
+            {
+                //orbit atempt
+
+                if (this.Position.X - player.Position.X > 0)
+                {
+                    if (this.Position.X < nextPosition.X)
+                        distances = 100;
+                }
+                else
+                {
+                    if (this.Position.X > nextPosition.X)
+                        distances = 100;
+                }
+            }
+
+            return distances;
+        }
+
+        private int GetCurrentQuadrant(Vector2 centerDistanceVector)
+        {
+            float dX, dY;
+            int badSide = 4;
+            dX = centerDistanceVector.X;
+            dY = centerDistanceVector.Y;
+
+            if (Math.Abs(dX) > Math.Abs(dY))
+            {
+                //Closer to the sides
+                if (dX > 0)
+                    badSide = 2;
+                else 
+                    badSide = 3;
+            }
+            else
+            {
+                //Closer to the top or the bottom
+                if (dY > 0)
+                    badSide = 0;
+                else 
+                    badSide = 1;
+            }
+
+            return badSide;
+        }
+
+        private float ThinkAboutWalls(float centerDistance, int i, float badSide)
+        {
+            float score = 0;
+            if (centerDistance > 250 && i == badSide)
+            {
+                switch (i)
+                {
+                    //0 cima
+                    case 0:
+                        //if (distanceVector.Y > 0)
+                        score = -500;
+                        break;
+                    //1 Baixo
+                    case 1:
+                        //if (distanceVector.Y < 0)
+                        score = -500;
+                        break;
+
+                    //2 Esquerda
+                    case 2:
+                        //if(distanceVector.X < 0)
+                        score = -500;
+                        break;
+
+                    //3 Direita
+                    case 3:
+                        //if (distanceVector.X > 0)
+                        score = -500;
+                        break;
+
+                    //4 Parar
+                    case 4:
+                        score = -500;
+                        break;
+                }
+            }
+            return score;
+        }
+
         private Vector2 CalculateNextPosition(int index)
         {
             Vector2 nextPosition = new Vector2(float.PositiveInfinity, float.PositiveInfinity);
