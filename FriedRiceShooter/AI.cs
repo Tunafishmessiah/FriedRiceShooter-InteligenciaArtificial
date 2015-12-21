@@ -98,7 +98,6 @@ namespace FriedRiceShooter
                 bulletDirections.Add(d);
             }
 
-            //debug
         }
 
         private void Think()
@@ -174,29 +173,99 @@ namespace FriedRiceShooter
         private float ThinkAboutPlayer(Vector2 nextPosition)
         {
             float distances = 0;
+            bool above = false;
+            bool right = false;
    
             float playerDistance = (nextPosition - player.Position).Length();
 
-            if (playerDistance > 150)
+            //Checking which side he is from the enemy
+            //RightSide?
+            if (this.Position.X > player.Position.X)
+                right = true;
+            //Above?
+            if (this.Position.Y < player.Position.Y)
+                above = true;
+
+            if (playerDistance > 250)
             {
                 distances = 200 * (150 / playerDistance);
             }
 
+            else if (playerDistance < 130)
+            {
+                switch (next.position)
+                {
+                    case 0:
+                        //up
+                        if (above) distances = 100;
+                        else distances = 0;
+                        break;
+                    case 1:
+                        //down
+                        if (!above) distances = 100;
+                        else distances = 0;
+                        break;
+                    case 2:
+                        //left
+                        if (!right) distances = 100;
+                        else distances = 0;
+                        break;
+                    case 3:
+                        //right
+                        if (right) distances = 100;
+                        else distances = 0;
+                        break;
+                    case 4:
+                        distances = 0;
+                        break;
+                }
+            }
+
             else
             {
-                //orbit atempt
+                ////orbit atempt
 
-                if (this.Position.X - player.Position.X > 0)
+                //if (this.Position.X - player.Position.X > 0)
+                //{
+                //    if (this.Position.X < nextPosition.X)
+                //        distances = 100;
+                //}
+                //else
+                //{
+                //    if (this.Position.X > nextPosition.X)
+                //        distances = 100;
+                //}
+
+                
+
+                //Making him spin a little
+                if (above && right)
                 {
-                    if (this.Position.X < nextPosition.X)
-                        distances = 100;
+                    //Making a point that the ai must be away of, here it's a point on the right of the player
+                    Vector2 RDistance = new Vector2(player.Position.X + 250, player.Position.Y);
+                    distances = (RDistance - this.Position).Length();
+                }
+                else if (above && !right)
+                {
+                    //a point above the player
+                    Vector2 RDistance = new Vector2(player.Position.X, player.Position.Y + 250);
+                    distances = (RDistance - this.Position).Length();
+                }
+                else if (!above && !right)
+                {
+                    //A point on the left of the player
+                    Vector2 RDistance = new Vector2(player.Position.X - 250, player.Position.Y);
+                    distances = (RDistance - this.Position).Length();
                 }
                 else
                 {
-                    if (this.Position.X > nextPosition.X)
-                        distances = 100;
+                    //A point bellow the player
+                    Vector2 RDistance = new Vector2(player.Position.X, player.Position.Y + 250);
+                    distances = (RDistance - this.Position).Length();
                 }
             }
+
+            if (next.position == 0) distances = 0;
 
             return distances;
         }
