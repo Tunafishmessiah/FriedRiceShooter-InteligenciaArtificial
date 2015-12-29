@@ -30,6 +30,7 @@ namespace FriedRiceShooter
             this.IsFixedTimeStep = false;
             this.TargetElapsedTime = TimeSpan.FromSeconds(1f / 1000f);
         }
+
         protected override void Initialize()
         {
 
@@ -75,6 +76,10 @@ namespace FriedRiceShooter
             mainShip.Update(gameTime);
             dummy.Update(gameTime);
             base.Update(gameTime);
+
+            PhysicsWorld.CheckCollision();
+
+            Console.WriteLine("Player: " + dummy.hitPoints + " " + mainShip.hitPoints + " :AI");
         }
 
         protected override void Draw(GameTime gameTime)

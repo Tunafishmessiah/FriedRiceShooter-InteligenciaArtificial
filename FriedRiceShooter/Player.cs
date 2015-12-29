@@ -31,25 +31,21 @@ namespace FriedRiceShooter
         public override void Move()
         {    
             KeyboardState k = Keyboard.GetState();
-            if (hitPoints > 0)
+            if (k.IsKeyDown(Keys.W))
             {
-
-                if (k.IsKeyDown(Keys.W))
-                {
-                    this.MoveUp();
-                }
-                else if (k.IsKeyDown(Keys.S))
-                {
-                    this.MoveDown();
-                }
-                else if (k.IsKeyDown(Keys.A))
-                {
-                    this.MoveLeft();
-                }
-                else if (k.IsKeyDown(Keys.D))
-                {
-                    this.MoveRight();
-                }
+                this.MoveUp();
+            }
+            else if (k.IsKeyDown(Keys.S))
+            {
+                this.MoveDown();
+            }
+            else if (k.IsKeyDown(Keys.A))
+            {
+                this.MoveLeft();
+            }
+            else if (k.IsKeyDown(Keys.D))
+            {
+                this.MoveRight();
             }
         }
     }

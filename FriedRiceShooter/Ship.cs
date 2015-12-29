@@ -13,7 +13,7 @@ namespace FriedRiceShooter
     abstract class Ship : Sprite
     {
         public int hitPoints;
-        public int bullets = 100000;
+        public int bullets = 30;
         public const int speed = 5;
         private const float cooldown = 0.25f;
         public GraphicsDeviceManager graphics;
@@ -25,7 +25,6 @@ namespace FriedRiceShooter
         public Ship(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite)
             : base(position, shipTexture, sprite, graphics)
         {
-            hitPoints = 10;
             this.graphics = graphics;
             this.bulletTexture = bulletTexture;
 
@@ -33,15 +32,11 @@ namespace FriedRiceShooter
             shooting = false;
         }
 
-        public virtual void Update(GameTime gametime)
+        public override void Update(GameTime gametime)
         {
             foreach (Bullet bullet in shotsFired.ToList())
             {
-                bullet.Update();
-                if (bullet.outOfBounds)
-                {
-                    shotsFired.Remove(bullet);
-                }
+                bullet.Update(gametime);
             }
 
             if (shooting)
@@ -51,10 +46,13 @@ namespace FriedRiceShooter
                 {
                     shooting = false;
                 }
-            }
+            } 
+
+            Rotate();
             Move();
             Position = Vector2.Clamp(Position, new Vector2(texture.Width / 2, texture.Height / 2), new Vector2(screenSize.X - texture.Width / 2, screenSize.Y - texture.Height / 2));
-            Rotate();
+            
+            base.Update(gametime);
         }
 
         public override void Draw()
@@ -63,6 +61,19 @@ namespace FriedRiceShooter
             foreach (Bullet bullet in shotsFired)
             {
                 bullet.Draw();
+            }
+        }
+
+        public override void Collision(Sprite other)
+        {
+            if (other is Bullet)
+            {
+                Bullet b = (Bullet)other;
+                if (b.Owner != this)
+                {
+                    Hit();
+                    b.Dispose();
+                }
             }
         }
 
@@ -120,7 +131,7 @@ namespace FriedRiceShooter
 
         public void Hit()
         {
-            this.hitPoints = this.hitPoints--;
+            hitPoints++;
         }
         
         public void Shoot()
@@ -128,7 +139,7 @@ namespace FriedRiceShooter
             if (bullets > 0)
             {
                 bullets--;
-                Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics, this is Player);
+                Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics, this is Player, shotsFired, this);
                 shotsFired.Add(shot);
                 shooting = true;
                 timer = 0;

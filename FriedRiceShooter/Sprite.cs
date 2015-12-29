@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Media;
 
 namespace FriedRiceShooter
 {
-    class Sprite
+    class Sprite : IDisposable
     {
         protected Texture2D texture;
         private Vector2 position;
@@ -22,6 +22,7 @@ namespace FriedRiceShooter
         private Vector2 origin;
         protected SpriteBatch spriter;
         protected Vector2 screenSize;
+        PhysicsBody body;
 
         public Sprite(Vector2 position, Texture2D texture, SpriteBatch sprite, GraphicsDeviceManager graphics)
         {
@@ -42,6 +43,7 @@ namespace FriedRiceShooter
             origin = new Vector2(this.texture.Width / 2, this.texture.Height / 2);
 
             screenSize = new Vector2(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight);
+            body = new PhysicsBody(new Rectangle((int)position.X, (int)position.Y, tangle.Width, tangle.Height), this);
         }
 
         public virtual void Draw()
@@ -57,6 +59,42 @@ namespace FriedRiceShooter
                 position = value;
                 hitbox = new Rectangle((int)this.position.X, (int)this.position.Y, this.texture.Width, this.texture.Height);
             }
+        }
+
+        public virtual void Update(GameTime gametime)
+        {
+            body.Update(gametime);
+        }
+
+        public virtual void Collision(Sprite other)
+        {
+
+        }
+
+        public 
+
+        bool disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+            if (disposing)
+            {
+                body.Dispose();
+            }
+            disposed = true;
+            
+        }
+
+        ~Sprite()
+        {
+            Dispose(false);
         }
     }
 }

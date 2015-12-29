@@ -16,9 +16,15 @@ namespace FriedRiceShooter
         public Vector2 velocity;
         public bool outOfBounds;
 
-        public Bullet(Vector2 shipPosition, float shipRotation,Texture2D bulletTexture, SpriteBatch sprite, GraphicsDeviceManager graphics, bool isPLayer)
+        public List<Bullet> shotsFired;
+        private Ship owner;
+
+
+        public Bullet(Vector2 shipPosition, float shipRotation,Texture2D bulletTexture, SpriteBatch sprite, GraphicsDeviceManager graphics, bool isPLayer, List<Bullet> shotsFired, Ship owner)
             : base(shipPosition, bulletTexture, sprite, graphics)
         {
+            this.shotsFired = shotsFired;
+            this.owner = owner;
             this.scale = new Vector2(.6f,.5f);
             this.velocity = Vector2.UnitX;
             this.velocity = Vector2.Transform(velocity, Matrix.CreateRotationZ(shipRotation));
@@ -26,19 +32,37 @@ namespace FriedRiceShooter
             this.outOfBounds = false;
 
             if (!isPLayer)
-                this.color = Color.Red;
-            
-            this.Update();
+                this.color = Color.Red;            
         }
 
-        public void Update()
+        public void Update(GameTime gametime)
         {
             Position = Position + (velocity*speed);
-
-            if (Position.X > this.screenSize.X || Position.X < 0 || Position.Y > this.screenSize.Y || Position.Y < 0)
+            base.Update(gametime);
+            if ((Position.X > this.screenSize.X || Position.X < 0 || Position.Y > this.screenSize.Y || Position.Y < 0) && !outOfBounds)
             {
                 outOfBounds = true;
+                this.Dispose();
             }
         }
+
+        protected override void Dispose(bool disposing)
+        { 	        
+            if (disposed)
+                return;
+            if (disposing)
+            {
+                shotsFired.Remove(this);
+            }
+
+            base.Dispose(disposing);
+        }
+
+        public Ship Owner
+        {
+            get { return owner; }
+        }
+
+        
     }
 }
