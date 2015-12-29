@@ -10,6 +10,7 @@ namespace FriedRiceShooter
     /// </summary>
     public class Game1 : Game
     {
+        bool TwoAI = true;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Ship mainShip;
@@ -44,17 +45,23 @@ namespace FriedRiceShooter
             BulletTexture = Content.Load<Texture2D>("Bullet");
 
             //Initialize ships here, for loading less resources
-            mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4,
-               graphics.PreferredBackBufferHeight / 2),
-                graphics, ShipTexture, BulletTexture,
-                spriteBatch);
-            /*mainShip = new AI(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
-                graphics.PreferredBackBufferHeight / 2),
-                graphics,
-                ShipTexture,
-                BulletTexture,
-                spriteBatch,
-                null); */
+            if (TwoAI)
+            {
+                mainShip = new AI(new Vector2(graphics.PreferredBackBufferWidth / 4,
+                    graphics.PreferredBackBufferHeight / 2),
+                    graphics,
+                    ShipTexture,
+                    BulletTexture,
+                    spriteBatch,
+                    null);
+            }
+            else
+            {
+                mainShip = new Player(new Vector2(graphics.PreferredBackBufferWidth / 4,
+                   graphics.PreferredBackBufferHeight / 2),
+                    graphics, ShipTexture, BulletTexture,
+                    spriteBatch);
+            }
 
             dummy = new AI(new Vector2((graphics.PreferredBackBufferWidth / 4) * 3,
                 graphics.PreferredBackBufferHeight / 2),
@@ -64,10 +71,21 @@ namespace FriedRiceShooter
                 spriteBatch,
                 mainShip); 
             
-            //((AI)(mainShip)).player = dummy;
+            if (TwoAI)
+                ((AI)(mainShip)).player = dummy;
         }
 
-        protected override void UnloadContent(){}
+        protected override void UnloadContent()
+        {
+            mainShip.Dispose();
+            mainShip = null;
+            dummy.Dispose();
+            dummy = null;
+            ShipTexture.Dispose();
+            ShipTexture = null;
+            BulletTexture.Dispose();
+            BulletTexture = null;
+        }
 
         protected override void Update(GameTime gameTime)
         {

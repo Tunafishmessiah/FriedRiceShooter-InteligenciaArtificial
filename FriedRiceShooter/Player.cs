@@ -33,18 +33,22 @@ namespace FriedRiceShooter
             KeyboardState k = Keyboard.GetState();
             if (k.IsKeyDown(Keys.W))
             {
+                direction = -Vector2.UnitY;
                 this.MoveUp();
             }
             else if (k.IsKeyDown(Keys.S))
             {
+                direction = Vector2.UnitY;
                 this.MoveDown();
             }
             else if (k.IsKeyDown(Keys.A))
             {
+                direction = -Vector2.UnitX;
                 this.MoveLeft();
             }
             else if (k.IsKeyDown(Keys.D))
             {
+                direction = Vector2.UnitX;
                 this.MoveRight();
             }
         }

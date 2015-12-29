@@ -39,7 +39,6 @@ namespace FriedRiceShooter
 
         public override void Update(GameTime gametime)
         {
-            next.position = 4;
             Look();
             Think();
             base.Update(gametime);
@@ -47,7 +46,7 @@ namespace FriedRiceShooter
 
         public override void Rotate()
         {
-            AimAt(player.Position);
+            AimAt(player.Position + player.direction * (Position - player.Position).Length() / Bullet.speed * 2f);
         }
 
         public override void Move()
@@ -57,18 +56,22 @@ namespace FriedRiceShooter
                 case 0:
                     //up
                     this.MoveUp();
+                    direction = -Vector2.UnitY;
                     break;
                 case 1:
                     //down
                     this.MoveDown();
+                    direction = Vector2.UnitY;
                     break;
                 case 2:
                     //left
                     this.MoveLeft();
+                    direction = -Vector2.UnitX;
                     break;
                 case 3:
                     //right
                     this.MoveRight();
+                    direction = Vector2.UnitX;
                     break;
                 case 4:
                     //no move
@@ -102,7 +105,7 @@ namespace FriedRiceShooter
 
         private void Think()
         {
-            float defensivo = bullets / (player.bullets == 0? -1 : player.bullets); 
+            bool ofensivo = (bullets / (player.bullets == 0? 0.5f : player.bullets)) > 0.5f; 
 
             float bestScore = float.NegativeInfinity;
             int bestIndex = 4;
@@ -144,7 +147,7 @@ namespace FriedRiceShooter
                 }
             }
             next.position = bestIndex;
-            next.shoting = true;
+            next.shoting = ofensivo;
         }
 
         private float ThinkAboutBullets(int count, Vector2 nextPosition)

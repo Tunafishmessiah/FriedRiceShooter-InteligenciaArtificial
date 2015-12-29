@@ -21,6 +21,7 @@ namespace FriedRiceShooter
         public List<Bullet> shotsFired;
         public bool shooting;
         private double timer;
+        public Vector2 direction;
 
         public Ship(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite)
             : base(position, shipTexture, sprite, graphics)
