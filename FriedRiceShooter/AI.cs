@@ -197,22 +197,22 @@ namespace FriedRiceShooter
                 {
                     case 0:
                         //up
-                        if (above) distances = 200;
+                        if (above) distances = 100;
                         else distances = 0;
                         break;
                     case 1:
                         //down
-                        if (!above) distances = 200;
+                        if (!above) distances = 100;
                         else distances = 0;
                         break;
                     case 2:
                         //left
-                        if (!right) distances = 200;
+                        if (!right) distances = 100;
                         else distances = 0;
                         break;
                     case 3:
                         //right
-                        if (right) distances = 200;
+                        if (right) distances = 100;
                         else distances = 0;
                         break;
                     case 4:
@@ -224,6 +224,19 @@ namespace FriedRiceShooter
             else
             {
                 ////orbit atempt
+
+                //if (this.Position.X - player.Position.X > 0)
+                //{
+                //    if (this.Position.X < nextPosition.X)
+                //        distances = 100;
+                //}
+                //else
+                //{
+                //    if (this.Position.X > nextPosition.X)
+                //        distances = 100;
+                //}
+
+                
 
                 //Making him spin a little
                 if (above && right)
