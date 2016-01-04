@@ -41,6 +41,8 @@
     <Compile Include="AiC.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="PhysicsBody.cs" />
+    <Compile Include="PhysicsWorld.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
