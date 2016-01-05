@@ -14,14 +14,15 @@ namespace FriedRiceShooter
     {
         public int hitPoints;
         public int bullets = 30;
-        public const int speed = 5;
-        private const float cooldown = 0.25f;
+        public float speed = 5;
+        public float cooldown = 0.25f;
         public GraphicsDeviceManager graphics;
         public Texture2D bulletTexture;
         public List<Bullet> shotsFired;
         public bool shooting;
         private double timer;
         public Vector2 direction;
+        protected float bulletSpeed = 10f;
 
         public Ship(Vector2 position, GraphicsDeviceManager graphics, Texture2D shipTexture, Texture2D bulletTexture, SpriteBatch sprite)
             : base(position, shipTexture, sprite, graphics)
@@ -141,6 +142,7 @@ namespace FriedRiceShooter
             {
                 bullets--;
                 Bullet shot = new Bullet(Position, this.rotation, bulletTexture, this.spriter, this.graphics, this is Player, shotsFired, this);
+                shot.speed = bulletSpeed;  
                 shotsFired.Add(shot);
                 shooting = true;
                 timer = 0;

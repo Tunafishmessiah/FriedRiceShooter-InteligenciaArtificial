@@ -10,13 +10,13 @@ namespace FriedRiceShooter
     /// </summary>
     public class Game1 : Game
     {
-        bool TwoAI = true;
+        bool TwoAI = false;
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Ship mainShip;
         Ship dummy;
         public Texture2D ShipTexture, BulletTexture;
-
+        public int hardness = 0;
 
         public Game1()
         {
@@ -53,7 +53,8 @@ namespace FriedRiceShooter
                     ShipTexture,
                     BulletTexture,
                     spriteBatch,
-                    null);
+                    null, 
+                    hardness);
             }
             else
             {
@@ -69,7 +70,8 @@ namespace FriedRiceShooter
                 ShipTexture,
                 BulletTexture,
                 spriteBatch,
-                mainShip); 
+                mainShip,
+                hardness); 
             
             if (TwoAI)
                 ((AI)(mainShip)).player = dummy;
@@ -91,6 +93,7 @@ namespace FriedRiceShooter
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
             mainShip.Update(gameTime);
             dummy.Update(gameTime);
             base.Update(gameTime);

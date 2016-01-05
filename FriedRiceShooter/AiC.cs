@@ -132,7 +132,7 @@ namespace FriedRiceShooter
             {
                 //Saber as proximas posições das balas
                 Bullet N = shot;
-                N.Position += (N.velocity * Bullet.speed);
+                N.Position += (N.velocity * N.speed);
 
                 fEnemy.Add(N);
             }

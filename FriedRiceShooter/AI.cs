@@ -28,13 +28,37 @@ namespace FriedRiceShooter
         private state next;
         private float rayCenter;
 
-        public AI(Vector2 position, GraphicsDeviceManager graphics, Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player)
+        public AI(Vector2 position, GraphicsDeviceManager graphics, 
+            Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player, int hardness)
             : base(position,graphics,ShipTexture,BulletTexture, Sprite)
         {
             this.player = player;
             next.position = 4;
             color = Color.Red;
             rayCenter = Math.Min(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight) / 2;
+
+            //Difficulty
+            bulletSpeed = 7.5f;
+            bullets = 15;
+            speed = 2.5f;
+            cooldown = 1f;
+
+            Random a = new Random();
+
+            float newBulletSpeed = 5f + 5f*(float)a.NextDouble();
+
+            float newSpeed = 1.5f + 2f * (float)a.NextDouble();
+
+            float newCooldown = .7f + .5f * (float)a.NextDouble();
+
+
+            float r = (bulletSpeed + speed + cooldown) / (newBulletSpeed + newSpeed + newCooldown) + hardness;
+
+            bulletSpeed = newBulletSpeed * r;
+            speed = newSpeed * r;
+            cooldown = newCooldown * r;
+            bullets = (int)(-20f * cooldown + 35f);
+
         }
 
         public override void Update(GameTime gametime)
@@ -46,7 +70,7 @@ namespace FriedRiceShooter
 
         public override void Rotate()
         {
-            AimAt(player.Position + player.direction * (Position - player.Position).Length() / Bullet.speed * 2f);
+            AimAt(player.Position + player.direction * (Position - player.Position).Length() / bulletSpeed * 2f);
         }
 
         public override void Move()
@@ -95,7 +119,7 @@ namespace FriedRiceShooter
 
             foreach (Bullet shot in player.shotsFired)
             {
-                futureBulletPositions.Add(shot.Position + shot.velocity * Bullet.speed);
+                futureBulletPositions.Add(shot.Position + shot.velocity * shot.speed);
                 Vector2 d = shot.velocity;
                 d.Normalize();
                 bulletDirections.Add(d);
