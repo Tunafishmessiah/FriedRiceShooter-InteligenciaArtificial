@@ -16,7 +16,7 @@ namespace FriedRiceShooter
         Ship mainShip;
         Ship dummy;
         public Texture2D ShipTexture, BulletTexture;
-        public int hardness = 0;
+        public float hardness = 2;
 
         public Game1()
         {

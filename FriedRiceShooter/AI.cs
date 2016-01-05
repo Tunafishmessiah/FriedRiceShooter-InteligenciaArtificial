@@ -29,7 +29,7 @@ namespace FriedRiceShooter
         private float rayCenter;
 
         public AI(Vector2 position, GraphicsDeviceManager graphics, 
-            Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player, int hardness)
+            Texture2D ShipTexture, Texture2D BulletTexture, SpriteBatch Sprite, Ship player, float hardness)
             : base(position,graphics,ShipTexture,BulletTexture, Sprite)
         {
             this.player = player;
@@ -37,7 +37,7 @@ namespace FriedRiceShooter
             color = Color.Red;
             rayCenter = Math.Min(graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight) / 2;
 
-            //Difficulty
+            //Standard
             bulletSpeed = 7.5f;
             bullets = 15;
             speed = 2.5f;
@@ -45,19 +45,16 @@ namespace FriedRiceShooter
 
             Random a = new Random();
 
-            float newBulletSpeed = 5f + 5f*(float)a.NextDouble();
+            float newBulletSpeed = 5f + 5f*(float)a.NextDouble();   //5     10
+            float newSpeed = 1.5f + 2f * (float)a.NextDouble();     //1.5   3.5
+            float newCooldown = .7f + .5f * (float)a.NextDouble();  //.7    1.2
 
-            float newSpeed = 1.5f + 2f * (float)a.NextDouble();
+            float r = (bulletSpeed + speed - cooldown) / (newBulletSpeed + newSpeed - newCooldown) + hardness/10;
 
-            float newCooldown = .7f + .5f * (float)a.NextDouble();
-
-
-            float r = (bulletSpeed + speed + cooldown) / (newBulletSpeed + newSpeed + newCooldown) + hardness;
-
-            bulletSpeed = newBulletSpeed * r;
+            bulletSpeed = newBulletSpeed * r; 
             speed = newSpeed * r;
-            cooldown = newCooldown * r;
-            bullets = (int)(-20f * cooldown + 35f);
+            cooldown = newCooldown / r;
+            bullets = (int)(15f * Math.Pow(cooldown, -0.5f));
 
         }
 
